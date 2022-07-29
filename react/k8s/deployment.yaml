@@ -1,0 +1,20 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: k8s-react
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-react
+  template:
+    metadata:
+      labels:
+        app: k8s-react
+    spec:
+      containers:
+        - name: k8s-react
+          image: k8s-react:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80

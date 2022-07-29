@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-backend
+  labels:
+    app: k8s-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-backend
+  template:
+    metadata:
+      labels:
+        app: k8s-backend
+    spec:
+      containers:
+        - name: k8s-backend
+          image: k8s-backend
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-configmap
+                  key: DATABASE_URL
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k8s-backend-service
+spec:
+  selector:
+    app: k8s-backend
+  type: LoadBalancer
+  externalIPs:
+    - 192.168.64.2
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+      nodePort: 30000
